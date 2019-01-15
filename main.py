@@ -11,12 +11,16 @@ if __name__ == "__main__":
 
     episodes = data_manager.get_episodes()
     for e in episodes:
-        comments = requests.request_episode_comments(e)
-        for c in comments:
-            data_manager.insert_comment(c.to_dict())
+       comments = requests.request_episode_comments(e)
+       for c in comments:
+           data_manager.insert_comment(c.to_dict())
 
-    all_comments = data_manager.get_comments()
-    for cc in all_comments:
-        print(c.episode_full_number)
-        print('-' + c.username)
-        print('--' + c.text)
+    # comments = requests.request_episode_comments(episodes[1])
+    # for c in comments:
+    #     data_manager.insert_comment(c.to_dict())
+    #
+    # all_comments = data_manager.get_comments()
+    # for cc in all_comments:
+    #      print(c.episode_full_number)
+    #      print('-' + c.username)
+    #      print('--' + c.text)
