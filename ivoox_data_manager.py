@@ -40,3 +40,7 @@ class IvooxDataManager:
         for c in comments_documents:
             comments.append(IvooxComment(**c))
         return comments
+
+    def delete_comments(self):
+        comments_table = self.db.table(self.COMMENTS_TABLE)
+        comments_table.purge();

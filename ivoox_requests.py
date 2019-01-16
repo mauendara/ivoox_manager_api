@@ -40,9 +40,18 @@ class IvooxRequests:
                     date = c.find('div.content div.comment ul.user-info li.date')[0]
                     comments.append(IvooxComment().create_comment(comment.text, username.attrs['title'], date.text,
                                                               episode.full_number))
+                else:
+                    print(len(username))
+                    print(username)
 
         footer = response.html.find('div.footer-link a')[0]
-        if hasattr(footer, 'data-objectid'):
+
+        try:
+            objectid = footer.attrs['data-objectid']
+        except Exception:
+            objectid = None
+
+        if objectid is not None:
             data = dict()
             data['parentId'] = '0'
             data['objectId'] = footer.attrs['data-objectid']
