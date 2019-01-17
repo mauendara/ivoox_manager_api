@@ -10,15 +10,15 @@ if __name__ == "__main__":
     data_manager.update_episodes(episodes)
 
     episodes = data_manager.get_episodes()
-    # for e in episodes:
-    #    comments = requests.request_episode_comments(e)
-    #    for c in comments:
-    #        data_manager.insert_comment(c.to_dict())
+    for e in episodes:
+       comments = requests.request_episode_comments(e)
+       for c in comments:
+           data_manager.insert_comment(c.to_dict())
 
-    data_manager.delete_comments()
-    comments = requests.request_episode_comments(episodes[7])
-    for c in comments:
-        data_manager.insert_comment(c.to_dict())
+    # data_manager.delete_comments()
+    # comments = requests.request_episode_comments(episodes[7])
+    # for c in comments:
+    #     data_manager.insert_comment(c.to_dict())
     #
     # all_comments = data_manager.get_comments()
     # for cc in all_comments:
