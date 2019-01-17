@@ -32,6 +32,7 @@ class IvooxRequests:
         comments = []
         for c in comments_html:
             comment = c.find('div.content div.comment p')
+            user_avatar = c.find('img')[0]
             if len(comment) == 1:
                 comment = comment[0]
                 username = c.find('div.content div.comment ul.user-info li.name a')
@@ -39,10 +40,7 @@ class IvooxRequests:
                     username = username[0]
                     date = c.find('div.content div.comment ul.user-info li.date')[0]
                     comments.append(IvooxComment().create_comment(comment.text, username.attrs['title'], date.text,
-                                                              episode.full_number))
-                else:
-                    print(len(username))
-                    print(username)
+                                                              episode.full_number, user_avatar.attrs['src']))
 
         footer = response.html.find('div.footer-link a')[0]
 
@@ -63,9 +61,11 @@ class IvooxRequests:
                 comments_html = response.html.find('div.comment-row')
                 for c in comments_html:
                     comment = c.find('div.content div.comment p')
+                    user_avatar = c.find('img')[0]
                     if len(comment) == 1:
                         comment = comment[0]
                         username = c.find('div.content div.comment ul.user-info li.name a')[0]
                         date = c.find('div.content div.comment ul.user-info li.date')[0]
-                        comments.append(IvooxComment().create_comment(comment.text, username.attrs['title'], date.text, episode.full_number))
+                        comments.append(IvooxComment().create_comment(comment.text, username.attrs['title'],
+                                                                      date.text, episode.full_number, user_avatar.attrs['src']))
         return comments
