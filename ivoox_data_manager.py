@@ -116,14 +116,20 @@ class IvooxDataManager:
             poles.append(IvooxPole(**p))
         return poles
 
-    def get_pole_by_episode(self, episode_full_number):
+    def get_poles_by_season(self, season):
         poles_table = self.db.table(self.POLES_TABLE)
         Pole = Query()
-        poles_documents = poles_table.search(Pole.episode_full_number == episode_full_number)
+        poles_documents = poles_table.search(Pole.season == season)
         poles = []
         for p in poles_documents:
             poles.append(IvooxPole(**p))
         return poles
+
+    def get_pole_by_episode(self, episode_full_number):
+        poles_table = self.db.table(self.POLES_TABLE)
+        Pole = Query()
+        poles_documents = poles_table.search(Pole.episode_full_number == episode_full_number)
+        return IvooxPole(**poles_documents[0])
 
     def find_and_store_pole_from_episode(self, episode_full_number):
         pole = self.get_pole_by_episode(episode_full_number)
