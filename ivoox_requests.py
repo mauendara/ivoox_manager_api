@@ -1,18 +1,19 @@
 from ivoox_models import *
 from requests_html import HTMLSession
 
+
 class IvooxRequests:
 
-    BASE_URL = 'https://www.ivoox.com'
-    PODCAST_URL_NAME = 'podcast-1up-radio-team_sq_f112100_1.html'
     COMMENTS_POST_URL = 'ajx-coments_v9_getComments_1.html'
     URL_SEPARATOR = '/'
 
-    def __init__(self):
+    def __init__(self, base_url, podcast_url):
         self.session = HTMLSession()
+        self.base_url = base_url
+        self.podcast_url = podcast_url
 
     def request_podcast_episodes(self):
-        response = self.session.get(self.BASE_URL + self.URL_SEPARATOR + self.PODCAST_URL_NAME)
+        response = self.session.get(self.base_url + self.URL_SEPARATOR + self.podcast_url)
         episodes_html = response.html.find('div.modulo-type-episodio div.content')
         episodes = []
         for e in episodes_html:
@@ -56,7 +57,7 @@ class IvooxRequests:
             data['objectType'] = footer.attrs['data-objecttype']
             data['from'] = footer.attrs['data-from']
 
-            response = self.session.post(self.BASE_URL + self.URL_SEPARATOR + self.COMMENTS_POST_URL, data)
+            response = self.session.post(self.base_url + self.URL_SEPARATOR + self.COMMENTS_POST_URL, data)
             if response.content != b'    ':
                 comments_html = response.html.find('div.comment-row')
                 for c in comments_html:

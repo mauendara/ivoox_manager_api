@@ -2,6 +2,7 @@ import dateparser
 import re
 import json
 
+
 class IvooxEntity:
 
     def __init__(self, **entries):

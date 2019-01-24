@@ -6,15 +6,15 @@ import dateparser
 
 
 class IvooxDataManager:
-    ENVIRONMENT = 'dev'
     EPISODES_TABLE = 'episodes'
     COMMENTS_TABLE = 'comments'
     POLES_TABLE = 'poles'
 
-    def __init__(self):
-        if self.ENVIRONMENT == 'dev':
+    def __init__(self, database_env):
+        self.database_env = database_env
+        if self.database_env == 'dev':
             self.db = TinyDB('db.json', indent=4, separators=(',', ': '))
-        elif self.ENVIRONMENT == 'pro':
+        elif self.database_env == 'pro':
             self.db = TinyDB('db.json')
 
     def insert_episode(self, episode):
@@ -40,10 +40,22 @@ class IvooxDataManager:
     def get_episodes_by_season(self, season):
         episodes_table = self.db.table(self.EPISODES_TABLE)
         Episode = Query()
-        episodes_documents = episodes_table.search(Episode.season == season)
+        episodes_documents = episodes_table.search(Episode.season_number == season)
         episodes = []
         for e in episodes_documents:
             episodes.append(IvooxEpisode(**e))
+        return episodes
+
+    def get_episodes_by_season_as_dict(self, season):
+        episodes_table = self.db.table(self.EPISODES_TABLE)
+        Episode = Query()
+        return episodes_table.search(Episode.season_number == season)
+
+    def get_episodes_by_season_sorted(self, season):
+        episodes_dicts = self.multikeysort(self.get_episodes_by_season_as_dict(season), ['-full_number'])
+        episodes = []
+        for e in episodes_dicts:
+            episodes.append(IvooxComment(**e))
         return episodes
 
     def get_episode_by_full_number(self, full_number):
@@ -129,11 +141,14 @@ class IvooxDataManager:
         poles_table = self.db.table(self.POLES_TABLE)
         Pole = Query()
         poles_documents = poles_table.search(Pole.episode_full_number == episode_full_number)
-        return IvooxPole(**poles_documents[0])
+        if len(poles_documents) > 0:
+            return IvooxPole(**poles_documents[0])
+        else:
+            return None
 
     def find_and_store_pole_from_episode(self, episode_full_number):
         pole = self.get_pole_by_episode(episode_full_number)
-        if not pole:
+        if pole is None:
             comments = self.get_comments_by_episode_sorted(episode_full_number)
             for c in comments:
                 comment_dict = c.to_dict()
